@@ -2,27 +2,34 @@ import SwiftUI
 
 struct CurrentHeartRateView: View {
     var flowerImageName: String
-    @State private var isAnimating = false
-    var value: Int // You might change this to @Binding<Int> if it needs to react to external changes
+    var value: Int
+    @State private var rotation: Double = 0 // State variable for rotation angle
+    @GestureState private var dragOffset = CGSize.zero // To track drag offset
 
     var body: some View {
         VStack {
             Text(String(value))
                 .fontWeight(.medium)
                 .font(.system(size: 60))
-            
+
             // Display the custom flower image based on heart rate
             Image(flowerImageName)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 100, height: 100) // Adjust this size to make it larger
-                .scaleEffect(self.isAnimating ? 1 : 0.8)
-                .onAppear {
-                    withAnimation(Animation.linear(duration: 0.5).repeatForever()) {
-                        self.isAnimating = true
-                    }
-                }
+                .rotationEffect(.degrees(rotation + dragOffset.width)) // Apply rotation effect based on drag
+                .gesture(
+                    DragGesture()
+                        .updating($dragOffset) { value, state, _ in
+                            state = value.translation // Update the drag offset
+                        }
+                        .onEnded { value in
+                            // Update the rotation based on the final drag distance
+                            rotation += value.translation.width
+                        }
+                )
         }
+        .animation(.easeInOut, value: dragOffset) // Smooth animation for rotation
     }
 }
 
