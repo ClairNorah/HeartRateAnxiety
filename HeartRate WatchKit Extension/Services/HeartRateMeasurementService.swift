@@ -1,65 +1,97 @@
-//
-//  HeartRateMeasurementService.swift
-//  HeartRate WatchKit Extension
-//
-//  Created by Anastasia Ryabenko on 27.01.2021.
-//
-
 import Foundation
-import SwiftUI
 import HealthKit
+import Combine
 
 class HeartRateMeasurementService: ObservableObject {
     private var healthStore = HKHealthStore()
-    let heartRateQuantity = HKUnit(from: "count/min")
+    private var heartRateQuery: HKAnchoredObjectQuery?
     
-    @Published var currentHeartRate: Int = 0
-    
-    @Published var minHeartRate: Int = -1
-    @Published var maxHeartRate: Int = 0
-    
-    init() {
-        autorizeHealthKit()
-        startHeartRateQuery(quantityTypeIdentifier: .heartRate)
-    }
-    
-    func autorizeHealthKit() {
-        let healthKitTypes: Set = [
-        HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!]
+    @Published var currentHeartRate: Int = 0 // Published property for updates
 
-        healthStore.requestAuthorization(toShare: healthKitTypes, read: healthKitTypes) { _, _ in }
+    // Initialize and request permissions
+    init() {
+        requestAuthorization()
     }
-    
-    private func startHeartRateQuery(quantityTypeIdentifier: HKQuantityTypeIdentifier) {
-        let devicePredicate = HKQuery.predicateForObjects(from: [HKDevice.local()])
-        let updateHandler: (HKAnchoredObjectQuery, [HKSample]?, [HKDeletedObject]?, HKQueryAnchor?, Error?) -> Void = {
-            query, samples, deletedObjects, queryAnchor, error in
-            guard let samples = samples as? [HKQuantitySample] else {
-                return
-            }
-            self.process(samples, type: quantityTypeIdentifier)
+
+    // Request HealthKit authorization
+    func requestAuthorization() {
+        guard HKHealthStore.isHealthDataAvailable() else {
+            print("HealthKit is not available on this device.")
+            return
         }
-        let query = HKAnchoredObjectQuery(type: HKObjectType.quantityType(forIdentifier: quantityTypeIdentifier)!, predicate: devicePredicate, anchor: nil, limit: HKObjectQueryNoLimit, resultsHandler: updateHandler)
-        query.updateHandler = updateHandler
-        healthStore.execute(query)
+        
+        let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate)!
+        
+        healthStore.requestAuthorization(toShare: nil, read: [heartRateType]) { success, error in
+            if success {
+                self.startHeartRateQuery()
+            } else {
+                if let error = error {
+                    print("Authorization failed: \(error.localizedDescription)")
+                } else {
+                    print("Authorization failed for an unknown reason.")
+                }
+            }
+        }
     }
     
-    private func process(_ samples: [HKQuantitySample], type: HKQuantityTypeIdentifier) {
-        var lastHeartRate = 0.0
+    // Start monitoring heart rate
+    private func startHeartRateQuery() {
+        let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate)!
         
-        for sample in samples {
-            if type == .heartRate {
-                lastHeartRate = sample.quantity.doubleValue(for: heartRateQuantity)
-            }
+        let query = HKAnchoredObjectQuery(
+            type: heartRateType,
+            predicate: nil,
+            anchor: nil,
+            limit: HKObjectQueryNoLimit
+        ) { [weak self] (query, samples, deletedObjects, anchor, error) in
+            self?.process(samples: samples, error: error)
+        }
+
+        query.updateHandler = { [weak self] (query, samples, deletedObjects, anchor, error) in
+            self?.process(samples: samples, error: error)
+        }
+
+        healthStore.execute(query)
+        self.heartRateQuery = query
+    }
+    
+    // Process heart rate samples
+    private func process(samples: [HKSample]?, error: Error?) {
+        guard error == nil else {
+            print("Failed to fetch heart rate data: \(error!.localizedDescription)")
+            return
+        }
+
+        if let samples = samples as? [HKQuantitySample], !samples.isEmpty {
+            // Use the latest sample for current heart rate
+            let latestSample = samples.last!
+            let heartRateUnit = HKUnit(from: "count/min")
+            let heartRateValue = latestSample.quantity.doubleValue(for: heartRateUnit)
+
             DispatchQueue.main.async {
-                self.currentHeartRate = Int(lastHeartRate)
-                if self.maxHeartRate < self.currentHeartRate {
-                    self.maxHeartRate = self.currentHeartRate
-                }
-                if self.minHeartRate == -1 || self.minHeartRate > self.currentHeartRate {
-                    self.minHeartRate = self.currentHeartRate
-                }
+                self.currentHeartRate = Int(heartRateValue)
+                
+                // Determine which flower to show
+                let flowerName = self.flowerImageName(for: self.currentHeartRate)
+                
+                // Print the current heart rate and corresponding flower
+                print("Updated heart rate: \(self.currentHeartRate), Flower: \(flowerName)") // Debug output
             }
+        }
+    }
+
+    // Function to determine which flower to show based on heart rate
+    private func flowerImageName(for currentHeartRate: Int) -> String {
+        switch currentHeartRate {
+        case ..<70:
+            return "green_flower" // Green for heart rate below 70
+        case 70..<80:
+            return "orange_flower" // Orange for heart rate between 70 and 80
+        case 80...:
+            return "red_flower" // Red for heart rate above 80
+        default:
+            return "green_flower" // Default to green if something goes wrong
         }
     }
 }

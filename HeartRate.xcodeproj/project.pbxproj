@@ -31,6 +31,13 @@
 			remoteGlobalIDString = 1A453E4325C1F7140004FF93;
 			remoteInfo = "HeartRate WatchKit App";
 		};
+		F704B6D72CAAF895006CABA9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A453E3A25C1F7130004FF93 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A453E4325C1F7140004FF93;
+			remoteInfo = "HeartRate WatchKit App";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -192,6 +199,7 @@
 			);
 			dependencies = (
 				1A453E4725C1F7140004FF93 /* PBXTargetDependency */,
+				F704B6D82CAAF895006CABA9 /* PBXTargetDependency */,
 			);
 			name = HeartRate;
 			productName = HeartRate;
@@ -296,6 +304,11 @@
 			isa = PBXTargetDependency;
 			target = 1A453E4325C1F7140004FF93 /* HeartRate WatchKit App */;
 			targetProxy = 1A453E4625C1F7140004FF93 /* PBXContainerItemProxy */;
+		};
+		F704B6D82CAAF895006CABA9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1A453E4325C1F7140004FF93 /* HeartRate WatchKit App */;
+			targetProxy = F704B6D72CAAF895006CABA9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -425,19 +438,19 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "HeartRate WatchKit Extension/HeartRate WatchKit Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = V45L8NX82R;
+				DEVELOPMENT_TEAM = HR9B7JSZAL;
 				INFOPLIST_FILE = "HeartRate WatchKit App/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ana.rya.HeartRate.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cheartrate.iphoneapp.watch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 7.2;
+				WATCHOS_DEPLOYMENT_TARGET = 9.6;
 			};
 			name = Debug;
 		};
@@ -450,19 +463,19 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "HeartRate WatchKit Extension/HeartRate WatchKit Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = V45L8NX82R;
+				DEVELOPMENT_TEAM = HR9B7JSZAL;
 				INFOPLIST_FILE = "HeartRate WatchKit App/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ana.rya.HeartRate.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cheartrate.iphoneapp.watch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 7.2;
+				WATCHOS_DEPLOYMENT_TARGET = 9.6;
 			};
 			name = Release;
 		};
@@ -471,9 +484,9 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = V45L8NX82R;
+				DEVELOPMENT_TEAM = HR9B7JSZAL;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ana.rya.HeartRate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cheartrate.iphoneapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -487,9 +500,9 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = V45L8NX82R;
+				DEVELOPMENT_TEAM = HR9B7JSZAL;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ana.rya.HeartRate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cheartrate.iphoneapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

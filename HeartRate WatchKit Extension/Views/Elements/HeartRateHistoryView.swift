@@ -1,10 +1,3 @@
-//
-//  HeartRateHistoryView.swift
-//  HeartRate WatchKit Extension
-//
-//  Created by Anastasia Ryabenko on 28.01.2021.
-//
-
 import SwiftUI
 
 struct HeartRateHistoryView: View {
@@ -29,5 +22,11 @@ struct HeartRateHistoryView: View {
             }
             Spacer()
         }
+    }
+}
+
+struct HeartRateHistoryView_Previews: PreviewProvider {
+    static var previews: some View {
+        HeartRateHistoryView(title: "Current", value: 72) // Example preview
     }
 }
