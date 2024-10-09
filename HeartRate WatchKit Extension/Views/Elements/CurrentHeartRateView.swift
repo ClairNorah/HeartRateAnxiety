@@ -8,7 +8,11 @@ struct CurrentHeartRateView: View {
     let petalColors: [Color] = [.red, .yellow, .blue, .green, .orange, .purple] // Different petal colors
     @State private var rotationAngle: Angle = .zero // Track the rotation of the flower
     @State private var lastDragPosition: CGPoint? = nil // Track the last drag position
+    @State private var scale: CGFloat = 1.0 // Scale for pulsing effect
+    @State private var isAnimating = false // To track if the animation is running
     @State private var cancellables = Set<AnyCancellable>() // To hold references to cancellable objects
+    @State private var inactivityTimer: AnyCancellable? // Timer for inactivity
+    @State private var isInteracting = false // To track if the user is interacting
 
     init(value: Int) {
         self.value = value
@@ -27,6 +31,7 @@ struct CurrentHeartRateView: View {
                         petalColor: petalColors[i % petalColors.count],
                         isVisible: $petalVisibility[i] // Bind visibility to each petal
                     )
+                    .scaleEffect(scale) // Apply the scaling effect
                 }
             }
             .rotationEffect(rotationAngle) // Apply the rotation only to the petals
@@ -34,6 +39,7 @@ struct CurrentHeartRateView: View {
             Circle()
                 .fill(heartRateColor(for: value)) // Color of the circle based on heart rate
                 .frame(width: 70, height: 80) // Size of the circle
+                .scaleEffect(scale) // Apply the scaling effect
                 .overlay(
                     Text(String(value))
                         .fontWeight(.medium)
@@ -41,13 +47,19 @@ struct CurrentHeartRateView: View {
                         .foregroundColor(.white) // Text color inside the circle
                 )
         }
-        // Update the petals count and color when the heart rate value changes
-        /*.onChange(of: previousHeartRate) { newHeartRate in
-            adjustNumberOfPetals(for: newHeartRate)
-        }*/
+        .onAppear {
+            // Start the inactivity timer
+            startInactivityTimer()
+        }
+        .onDisappear {
+            inactivityTimer?.cancel() // Cancel the timer when the view disappears
+        }
         .gesture(
             DragGesture()
                 .onChanged { value in
+                    isInteracting = true // User is interacting
+                    // Reset the inactivity timer
+                    resetInactivityTimer()
                     // Calculate the change in angle based on the drag movement
                     if let lastPosition = lastDragPosition {
                         let deltaX = value.location.x - lastPosition.x
@@ -63,6 +75,42 @@ struct CurrentHeartRateView: View {
         )
     }
 
+    // Function to start pulse animation
+    private func startPulseAnimation() {
+        isAnimating = true
+        withAnimation(Animation.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
+            scale = 1.2 // Scale up
+        }
+    }
+
+    // Function to start inactivity timer
+    private func startInactivityTimer() {
+        inactivityTimer = Timer
+            .publish(every: 30, on: .main, in: .common)
+            .autoconnect()
+            .sink { [self] _ in // Use [self] instead of [weak self]
+                if !isInteracting {
+                    startPulseAnimation() // Start the pulse animation after 30 seconds
+                }
+            }
+    }
+
+    // Function to reset the inactivity timer
+    private func resetInactivityTimer() {
+        inactivityTimer?.cancel() // Cancel any existing timer
+        isInteracting = false // Reset interaction flag
+
+        // Set a new timer to start the pulse animation after 30 seconds of inactivity
+        inactivityTimer = Timer
+            .publish(every: 30, on: .main, in: .common)
+            .autoconnect()
+            .sink { [self] _ in // Use [self] instead of [weak self]
+                if !isInteracting {
+                    startPulseAnimation() // Start the pulse animation after 30 seconds
+                }
+            }
+    }
+
     // Function to determine the color based on heart rate
     private func heartRateColor(for currentHeartRate: Int) -> Color {
         switch currentHeartRate {
@@ -76,26 +124,4 @@ struct CurrentHeartRateView: View {
             return .green // Default to green if something goes wrong
         }
     }
-    
-    private var previousHeartRate: Int = 0
-    
-    private mutating func adjustNumberOfPetals(for currentHeartRate: Int) {
-        let previousColor = heartRateColor(for: previousHeartRate)
-        let currentColor = heartRateColor(for: currentHeartRate)
-
-        // Check if heart rate color is changing between zones
-        if previousColor == .green && currentColor == .orange {
-            numberOfPetals -= 1
-        } else if previousColor == .orange && currentColor == .red {
-            numberOfPetals -= 1
-        } else if previousColor == .red && currentColor == .orange {
-            numberOfPetals += 1
-        } else if previousColor == .orange && currentColor == .green {
-            numberOfPetals += 1
-        }
-
-        // Update previous heart rate
-        previousHeartRate = currentHeartRate
-    }
-
 }
