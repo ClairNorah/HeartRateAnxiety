@@ -10,7 +10,7 @@ struct CurrentHeartRateView: View {
         VStack {
             Text(String(value))
                 .fontWeight(.medium)
-                .font(.system(size: 60))
+                .font(.system(size: 30))
 
             // Display the custom flower image based on heart rate
             Image(flowerImageName)

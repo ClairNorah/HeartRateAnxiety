@@ -20,7 +20,6 @@
 		1A7BD4E525C1FF440036EACB /* HeartRateMeasurementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7BD4E425C1FF430036EACB /* HeartRateMeasurementService.swift */; };
 		1AC37F8625C33D71001E9B2A /* HeartRateHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC37F8525C33D71001E9B2A /* HeartRateHistoryView.swift */; };
 		1AC37F8E25C341DB001E9B2A /* CurrentHeartRateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC37F8D25C341DB001E9B2A /* CurrentHeartRateView.swift */; };
-		F77D8A382C98AA4700703415 /* red_flower.png in Resources */ = {isa = PBXBuildFile; fileRef = F77D8A372C98AA4700703415 /* red_flower.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,7 +72,6 @@
 		1A7BD4E425C1FF430036EACB /* HeartRateMeasurementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateMeasurementService.swift; sourceTree = "<group>"; };
 		1AC37F8525C33D71001E9B2A /* HeartRateHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateHistoryView.swift; sourceTree = "<group>"; };
 		1AC37F8D25C341DB001E9B2A /* CurrentHeartRateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentHeartRateView.swift; sourceTree = "<group>"; };
-		F77D8A372C98AA4700703415 /* red_flower.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = red_flower.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,7 +142,6 @@
 		1A453E6125C1F7160004FF93 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				F77D8A372C98AA4700703415 /* red_flower.png */,
 				1A453E6225C1F7160004FF93 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
@@ -272,7 +269,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F77D8A382C98AA4700703415 /* red_flower.png in Resources */,
 				1A453E6325C1F7160004FF93 /* Preview Assets.xcassets in Resources */,
 				1A453E6025C1F7160004FF93 /* Assets.xcassets in Resources */,
 				1A453E4A25C1F7150004FF93 /* Assets.xcassets in Resources */,

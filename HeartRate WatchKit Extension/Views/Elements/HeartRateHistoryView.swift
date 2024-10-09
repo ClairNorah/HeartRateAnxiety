@@ -9,7 +9,7 @@ struct HeartRateHistoryView: View {
         HStack(spacing: 4) {
             Text(title)
                 .fontWeight(.regular)
-                .font(.system(size: 12))
+                .font(.system(size: 8))
             Text(String(value))
                 .fontWeight(.bold)
                 .font(.system(size: 16))
