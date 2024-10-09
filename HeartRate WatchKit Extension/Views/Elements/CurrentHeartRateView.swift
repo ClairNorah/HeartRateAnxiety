@@ -3,15 +3,17 @@ import Combine
 
 struct CurrentHeartRateView: View {
     var value: Int
-    @State private var petalVisibility: [Bool] // Array to track visibility of each petal
-    var numberOfPetals = 6 // Number of petals
+    @State private var petalVisibility: [Bool]  = []  // Array to track visibility of each petal
+    @State private var numberOfPetals: Int // Number of petals
     let petalColors: [Color] = [.red, .yellow, .blue, .green, .orange, .purple] // Different petal colors
     @State private var rotationAngle: Angle = .zero // Track the rotation of the flower
     @State private var lastDragPosition: CGPoint? = nil // Track the last drag position
     @State private var cancellables = Set<AnyCancellable>() // To hold references to cancellable objects
-
+    @State private var previousHeartRate: Int = 0
+    
     init(value: Int) {
         self.value = value
+        self.numberOfPetals = 6
         // Initially, all petals are visible
         _petalVisibility = State(initialValue: Array(repeating: true, count: numberOfPetals))
     }
@@ -42,9 +44,9 @@ struct CurrentHeartRateView: View {
                 )
         }
         // Update the petals count and color when the heart rate value changes
-        /*.onChange(of: previousHeartRate) { newHeartRate in
+        .onChange(of: previousHeartRate) { newHeartRate in
             adjustNumberOfPetals(for: newHeartRate)
-        }*/
+        }
         .gesture(
             DragGesture()
                 .onChanged { value in
@@ -77,9 +79,7 @@ struct CurrentHeartRateView: View {
         }
     }
     
-    private var previousHeartRate: Int = 0
-    
-    private mutating func adjustNumberOfPetals(for currentHeartRate: Int) {
+    private func adjustNumberOfPetals(for currentHeartRate: Int) {
         let previousColor = heartRateColor(for: previousHeartRate)
         let currentColor = heartRateColor(for: currentHeartRate)
 
