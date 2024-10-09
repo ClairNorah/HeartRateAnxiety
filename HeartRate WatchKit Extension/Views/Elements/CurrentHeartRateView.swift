@@ -24,14 +24,32 @@ struct CurrentHeartRateView: View {
                 )
             }
 
-            VStack {
-                // Display heart rate in the center
-                Text(String(value))
-                    .fontWeight(.medium)
-                    .font(.system(size: 30))
-            }
+            // Circle with heart rate number
+            Circle()
+                .fill(heartRateColor(for: value)) // Color of the circle based on heart rate
+                .frame(width: 70, height: 80) // Size of the circle
+                .overlay(
+                    Text(String(value))
+                        .fontWeight(.medium)
+                        .font(.system(size: 30))
+                        .foregroundColor(.white) // Text color inside the circle
+                )
         }
         .padding()
+    }
+
+    // Function to determine the color based on heart rate
+    private func heartRateColor(for currentHeartRate: Int) -> Color {
+        switch currentHeartRate {
+        case ..<70:
+            return .green // Green for heart rate below 70
+        case 70..<80:
+            return .orange // Orange for heart rate between 70 and 80
+        case 80...:
+            return .red // Red for heart rate above 80
+        default:
+            return .green // Default to green if something goes wrong
+        }
     }
 }
 
