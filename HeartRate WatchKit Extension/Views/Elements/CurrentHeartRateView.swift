@@ -5,6 +5,9 @@ struct CurrentHeartRateView: View {
     @State private var petalVisibility: [Bool] // Array to track visibility of each petal
     let numberOfPetals = 6 // Number of petals
     let petalColors: [Color] = [.red, .yellow, .blue, .green, .orange, .purple] // Different petal colors
+    @State private var rotationAngle: Angle = .zero // Track the rotation of the flower
+    @State private var lastDragPosition: CGPoint? = nil // Track the last drag position
+
 
     init(value: Int) {
         self.value = value
@@ -35,7 +38,24 @@ struct CurrentHeartRateView: View {
                         .foregroundColor(.white) // Text color inside the circle
                 )
         }
-        .padding()
+        .rotationEffect(rotationAngle) // Apply the rotation to the entire flower
+        .gesture(
+            DragGesture()
+                .onChanged { value in
+                    // Calculate the change in angle based on the drag movement
+                    if let lastPosition = lastDragPosition {
+                        let deltaX = value.location.x - lastPosition.x
+                        let deltaY = value.location.y - lastPosition.y
+                        let angleChange = atan2(deltaY, deltaX)
+                        rotationAngle += Angle(radians: Double(angleChange))
+                    }
+                    lastDragPosition = value.location
+                }
+                .onEnded { _ in
+                    lastDragPosition = nil // Reset drag position when gesture ends
+                }
+        )
+
     }
 
     // Function to determine the color based on heart rate
