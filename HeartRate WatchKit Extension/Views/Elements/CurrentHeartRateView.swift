@@ -17,15 +17,18 @@ struct CurrentHeartRateView: View {
 
     var body: some View {
         ZStack {
-            // Generate petals in a circular pattern
-            ForEach(0..<numberOfPetals, id: \.self) { i in // Use id: \.self to ensure the loop works
-                let angle = Double(i) * (2 * .pi) / Double(numberOfPetals) // Calculate angle for each petal
-                PetalView(
-                    angle: angle,
-                    petalColor: petalColors[i % petalColors.count],
-                    isVisible: $petalVisibility[i] // Bind visibility to each petal
-                )
+            // Generate petals in a circular pattern and apply rotation only to this part
+            ZStack {
+                ForEach(0..<numberOfPetals, id: \.self) { i in
+                    let angle = Double(i) * (2 * .pi) / Double(numberOfPetals) // Calculate angle for each petal
+                    PetalView(
+                        angle: angle,
+                        petalColor: petalColors[i % petalColors.count],
+                        isVisible: $petalVisibility[i] // Bind visibility to each petal
+                    )
+                }
             }
+            .rotationEffect(rotationAngle) // Apply the rotation only to the petals
 
             // Circle with heart rate number
             Circle()
@@ -38,7 +41,6 @@ struct CurrentHeartRateView: View {
                         .foregroundColor(.white) // Text color inside the circle
                 )
         }
-        .rotationEffect(rotationAngle) // Apply the rotation to the entire flower
         .gesture(
             DragGesture()
                 .onChanged { value in
