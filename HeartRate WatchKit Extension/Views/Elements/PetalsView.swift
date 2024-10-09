@@ -16,8 +16,8 @@ struct PetalView: View {
             Ellipse()
                 .fill(petalColor)
                 .frame(width: 20, height: 50) // Elongated petal shape
-                .offset(x: CGFloat(cos(angle) * 80), y: CGFloat(sin(angle) * 80)) // Position petals in circular pattern
-                .rotationEffect(.degrees(angle * 180 / .pi)) // Rotate each petal to face outward
+                .offset(x: 0, y: -60) // Position each petal away from the center
+                .rotationEffect(Angle(radians: angle)) // Rotate each petal according to its angle
                 .onTapGesture {
                     // When tapped, make the petal disappear
                     isVisible = false

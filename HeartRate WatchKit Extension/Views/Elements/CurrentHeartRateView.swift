@@ -34,3 +34,9 @@ struct CurrentHeartRateView: View {
         .padding()
     }
 }
+
+struct CurrentHeartRateView_Previews: PreviewProvider {
+    static var previews: some View {
+        CurrentHeartRateView(value: 75)
+    }
+}
