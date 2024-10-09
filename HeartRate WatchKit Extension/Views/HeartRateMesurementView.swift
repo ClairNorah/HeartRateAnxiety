@@ -24,7 +24,6 @@ struct HeartRateMeasurementView: View {
 
             // Pass the appropriate flower image based on heart rate
             CurrentHeartRateView(
-                flowerImageName: flowerImageName(for: heartRateMeasurementService.currentHeartRate),
                 value: heartRateMeasurementService.currentHeartRate
             )
 

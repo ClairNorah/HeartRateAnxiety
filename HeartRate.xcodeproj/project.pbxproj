@@ -20,6 +20,7 @@
 		1A7BD4E525C1FF440036EACB /* HeartRateMeasurementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7BD4E425C1FF430036EACB /* HeartRateMeasurementService.swift */; };
 		1AC37F8625C33D71001E9B2A /* HeartRateHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC37F8525C33D71001E9B2A /* HeartRateHistoryView.swift */; };
 		1AC37F8E25C341DB001E9B2A /* CurrentHeartRateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC37F8D25C341DB001E9B2A /* CurrentHeartRateView.swift */; };
+		F77A679F2CB69FA000F2A74D /* PetalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77A679E2CB69F9600F2A74D /* PetalsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		1A7BD4E425C1FF430036EACB /* HeartRateMeasurementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateMeasurementService.swift; sourceTree = "<group>"; };
 		1AC37F8525C33D71001E9B2A /* HeartRateHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateHistoryView.swift; sourceTree = "<group>"; };
 		1AC37F8D25C341DB001E9B2A /* CurrentHeartRateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentHeartRateView.swift; sourceTree = "<group>"; };
+		F77A679E2CB69F9600F2A74D /* PetalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetalsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +177,7 @@
 		1AC37F8425C33D5D001E9B2A /* Elements */ = {
 			isa = PBXGroup;
 			children = (
+				F77A679E2CB69F9600F2A74D /* PetalsView.swift */,
 				1AC37F8525C33D71001E9B2A /* HeartRateHistoryView.swift */,
 				1AC37F8D25C341DB001E9B2A /* CurrentHeartRateView.swift */,
 			);
@@ -288,6 +291,7 @@
 				1AC37F8E25C341DB001E9B2A /* CurrentHeartRateView.swift in Sources */,
 				1A453E5E25C1F7160004FF93 /* ComplicationController.swift in Sources */,
 				1A453E5625C1F7160004FF93 /* HeartRateApp.swift in Sources */,
+				F77A679F2CB69FA000F2A74D /* PetalsView.swift in Sources */,
 				1A453E5C25C1F7160004FF93 /* NotificationView.swift in Sources */,
 				1A7BD4E525C1FF440036EACB /* HeartRateMeasurementService.swift in Sources */,
 			);
