@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 struct CurrentHeartRateView: View {
     var value: Int
@@ -7,7 +8,7 @@ struct CurrentHeartRateView: View {
     let petalColors: [Color] = [.red, .yellow, .blue, .green, .orange, .purple] // Different petal colors
     @State private var rotationAngle: Angle = .zero // Track the rotation of the flower
     @State private var lastDragPosition: CGPoint? = nil // Track the last drag position
-
+    @State private var cancellables = Set<AnyCancellable>() // To hold references to cancellable objects
 
     init(value: Int) {
         self.value = value
@@ -57,7 +58,6 @@ struct CurrentHeartRateView: View {
                     lastDragPosition = nil // Reset drag position when gesture ends
                 }
         )
-
     }
 
     // Function to determine the color based on heart rate
@@ -72,11 +72,5 @@ struct CurrentHeartRateView: View {
         default:
             return .green // Default to green if something goes wrong
         }
-    }
-}
-
-struct CurrentHeartRateView_Previews: PreviewProvider {
-    static var previews: some View {
-        CurrentHeartRateView(value: 75)
     }
 }
