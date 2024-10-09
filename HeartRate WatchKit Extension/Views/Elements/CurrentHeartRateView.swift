@@ -3,7 +3,7 @@ import SwiftUI
 struct CurrentHeartRateView: View {
     var value: Int
     @State private var petalVisibility: [Bool] // Array to track visibility of each petal
-    let numberOfPetals = 6 // Number of petals
+    var numberOfPetals = 6 // Number of petals
     let petalColors: [Color] = [.red, .yellow, .blue, .green, .orange, .purple] // Different petal colors
     @State private var rotationAngle: Angle = .zero // Track the rotation of the flower
     @State private var lastDragPosition: CGPoint? = nil // Track the last drag position
@@ -29,7 +29,6 @@ struct CurrentHeartRateView: View {
                 }
             }
             .rotationEffect(rotationAngle) // Apply the rotation only to the petals
-
             // Circle with heart rate number
             Circle()
                 .fill(heartRateColor(for: value)) // Color of the circle based on heart rate
@@ -41,6 +40,10 @@ struct CurrentHeartRateView: View {
                         .foregroundColor(.white) // Text color inside the circle
                 )
         }
+        // Update the petals count and color when the heart rate value changes
+        /*.onChange(of: previousHeartRate) { newHeartRate in
+            adjustNumberOfPetals(for: newHeartRate)
+        }*/
         .gesture(
             DragGesture()
                 .onChanged { value in
@@ -73,6 +76,28 @@ struct CurrentHeartRateView: View {
             return .green // Default to green if something goes wrong
         }
     }
+    
+    private var previousHeartRate: Int = 0
+    
+    private mutating func adjustNumberOfPetals(for currentHeartRate: Int) {
+        let previousColor = heartRateColor(for: previousHeartRate)
+        let currentColor = heartRateColor(for: currentHeartRate)
+
+        // Check if heart rate color is changing between zones
+        if previousColor == .green && currentColor == .orange {
+            numberOfPetals -= 1
+        } else if previousColor == .orange && currentColor == .red {
+            numberOfPetals -= 1
+        } else if previousColor == .red && currentColor == .orange {
+            numberOfPetals += 1
+        } else if previousColor == .orange && currentColor == .green {
+            numberOfPetals += 1
+        }
+
+        // Update previous heart rate
+        previousHeartRate = currentHeartRate
+    }
+
 }
 
 struct CurrentHeartRateView_Previews: PreviewProvider {
