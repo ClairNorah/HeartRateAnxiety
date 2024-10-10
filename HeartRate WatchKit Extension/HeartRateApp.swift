@@ -6,6 +6,7 @@ struct HeartRateApp: App {
         WindowGroup {
             NavigationView {
                 HeartRateMeasurementView() // Ensure the spelling is correct here
+                //InteractionSelectionView()
             }
         }
         
