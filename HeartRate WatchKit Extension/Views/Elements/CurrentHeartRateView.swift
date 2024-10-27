@@ -56,9 +56,9 @@ struct CurrentHeartRateView: View {
         .onDisappear {
             inactivityTimer?.cancel() // Cancel the timer when the view disappears
         }
-        // Update the petals count and color when the heart rate value changes
-        .onChange(of: previousHeartRate) { newHeartRate in
+        .onChange(of: value) { newHeartRate in
             adjustNumberOfPetals(for: newHeartRate)
+            previousHeartRate = newHeartRate // Update previousHeartRate to the new value
         }
         .gesture(
             DragGesture()
