@@ -12,34 +12,51 @@ class HeartRateMeasurementService: ObservableObject {
     // Initialize and request permissions
     init() {
         #if targetEnvironment(simulator)
-        startHeartRateSimulation() // Use simulated heart rate in simulator
+        startHeartRateSimulation(isRandom: true) // Use simulated heart rate in simulator
         #else
         requestAuthorization() // Real device uses HealthKit authorization
         #endif
     }
 
     // Simulator-only: starts generating random heart rate values
-    private func startHeartRateSimulation() {
+    private func startHeartRateSimulation(isRandom: Bool) {
         // Set an initial random heart rate within a realistic resting range
-        self.currentHeartRate = Int.random(in: 60...80)
+        self.currentHeartRate = isRandom ? Int.random(in: 60...80) : 55
         var targetHeartRate = self.currentHeartRate
-        
+        var increasing = true // For non-random, indicates if heart rate is increasing or decreasing
+
         // Timer for updating heart rate with slight fluctuations every 1 second
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            // Adjust target heart rate slightly up or down for a natural change
-            targetHeartRate += Int.random(in: -2...2)
-            
-            // Clamp the heart rate to a realistic range
-            targetHeartRate = min(max(targetHeartRate, 55), 100)
-            
-            // Smooth transition to the new target heart rate
-            if self.currentHeartRate < targetHeartRate {
-                self.currentHeartRate += 1
-            } else if self.currentHeartRate > targetHeartRate {
-                self.currentHeartRate -= 1
+            if isRandom {
+                // Adjust target heart rate slightly up or down for a natural change
+                targetHeartRate += Int.random(in: -2...2)
+                
+                // Clamp the heart rate to a realistic range
+                targetHeartRate = min(max(targetHeartRate, 55), 100)
+                
+                // Smooth transition to the new target heart rate
+                if self.currentHeartRate < targetHeartRate {
+                    self.currentHeartRate += 1
+                } else if self.currentHeartRate > targetHeartRate {
+                    self.currentHeartRate -= 1
+                }
+            } else {
+                // Non-random mode: increase to max, then decrease back in a loop
+                if increasing {
+                    self.currentHeartRate += 1
+                    if self.currentHeartRate >= 100 {
+                        increasing = false
+                    }
+                } else {
+                    self.currentHeartRate -= 1
+                    if self.currentHeartRate <= 55 {
+                        increasing = true
+                    }
+                }
             }
         }
     }
+
 
 
     // Real device: Request HealthKit authorization
