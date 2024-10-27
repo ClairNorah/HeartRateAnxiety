@@ -5,15 +5,44 @@ import Combine
 class HeartRateMeasurementService: ObservableObject {
     private var healthStore = HKHealthStore()
     private var heartRateQuery: HKAnchoredObjectQuery?
-    
+    private var timer: Timer? // Timer for simulated heart rate in simulator
+
     @Published var currentHeartRate: Int = 0 // Published property for updates
 
     // Initialize and request permissions
     init() {
-        requestAuthorization()
+        #if targetEnvironment(simulator)
+        startHeartRateSimulation() // Use simulated heart rate in simulator
+        #else
+        requestAuthorization() // Real device uses HealthKit authorization
+        #endif
     }
 
-    // Request HealthKit authorization
+    // Simulator-only: starts generating random heart rate values
+    private func startHeartRateSimulation() {
+        // Set an initial random heart rate within a realistic resting range
+        self.currentHeartRate = Int.random(in: 60...80)
+        var targetHeartRate = self.currentHeartRate
+        
+        // Timer for updating heart rate with slight fluctuations every 1 second
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            // Adjust target heart rate slightly up or down for a natural change
+            targetHeartRate += Int.random(in: -2...2)
+            
+            // Clamp the heart rate to a realistic range
+            targetHeartRate = min(max(targetHeartRate, 55), 100)
+            
+            // Smooth transition to the new target heart rate
+            if self.currentHeartRate < targetHeartRate {
+                self.currentHeartRate += 1
+            } else if self.currentHeartRate > targetHeartRate {
+                self.currentHeartRate -= 1
+            }
+        }
+    }
+
+
+    // Real device: Request HealthKit authorization
     func requestAuthorization() {
         guard HKHealthStore.isHealthDataAvailable() else {
             print("HealthKit is not available on this device.")
@@ -35,7 +64,7 @@ class HeartRateMeasurementService: ObservableObject {
         }
     }
     
-    // Start monitoring heart rate
+    // Start monitoring heart rate on a real device
     private func startHeartRateQuery() {
         let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate)!
         
@@ -93,5 +122,9 @@ class HeartRateMeasurementService: ObservableObject {
         default:
             return "green_flower" // Default to green if something goes wrong
         }
+    }
+
+    deinit {
+        timer?.invalidate() // Stop the timer if in simulator mode
     }
 }
