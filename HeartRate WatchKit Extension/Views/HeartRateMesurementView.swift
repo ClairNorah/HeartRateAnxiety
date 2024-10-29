@@ -13,8 +13,8 @@ struct HeartRateMeasurementView: View {
 
             // Display current heart rate and HRV
             HeartRateHistoryView(
-                title: "Current",
-                value: heartRateMeasurementService.currentHeartRate,
+                /*title: "Current",
+                value: heartRateMeasurementService.currentHeartRate,*/
                 hrv: heartRateMeasurementService.heartRateVariability
             )
         }
