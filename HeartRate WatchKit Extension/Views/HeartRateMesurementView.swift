@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HeartRateMeasurementView: View {
     @ObservedObject var heartRateMeasurementService = HeartRateMeasurementService()
+    @State private var isInteracting = false
 
     var body: some View {
         VStack {
@@ -13,15 +14,23 @@ struct HeartRateMeasurementView: View {
 
             // Display current heart rate and HRV
             HeartRateHistoryView(
-                /*title: "Current",
-                value: heartRateMeasurementService.currentHeartRate,*/
                 hrv: heartRateMeasurementService.heartRateVariability
             )
         }
         .padding()
+        .onAppear {
+            InteractionLogger.logInteraction() // Log initial view appearance
+        }
         .onReceive(heartRateMeasurementService.$currentHeartRate) { newHeartRate in
             print("Current Heart Rate: \(newHeartRate)") // For debugging
         }
+        .gesture(
+            TapGesture()
+                .onEnded {
+                    isInteracting = true
+                    InteractionLogger.logInteraction() // Log any tap interaction
+                }
+        )
     }
 }
 

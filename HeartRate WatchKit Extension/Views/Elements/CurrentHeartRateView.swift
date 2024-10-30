@@ -83,12 +83,12 @@ struct CurrentHeartRateView: View {
 
     // Function to start pulse animation
     private func startPulseAnimation() {
+        guard !isInteracting else { return } // Only start animation if not interacting
         isAnimating = true
         withAnimation(Animation.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
             scale = 1.2 // Scale up
         }
     }
-
     // Function to start inactivity timer
     private func startInactivityTimer() {
         inactivityTimer = Timer
@@ -105,6 +105,8 @@ struct CurrentHeartRateView: View {
     private func resetInactivityTimer() {
         inactivityTimer?.cancel() // Cancel any existing timer
         isInteracting = false // Reset interaction flag
+        isAnimating = false // Stop animation when user interacts
+        scale = 1.0 // Reset scale to original size
 
         // Set a new timer to start the pulse animation after 30 seconds of inactivity
         inactivityTimer = Timer
