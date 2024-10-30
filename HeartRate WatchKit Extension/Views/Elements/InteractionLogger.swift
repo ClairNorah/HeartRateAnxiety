@@ -22,7 +22,7 @@ struct InteractionLogger {
         // Write to file
         do {
             try csvText.write(to: filePath, atomically: true, encoding: .utf8)
-            print("File saved at \(filePath)")
+            print("File saved at: \(filePath.path)") // Print file path to console
         } catch {
             print("Failed to write file: \(error)")
         }
