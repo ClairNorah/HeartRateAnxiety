@@ -33,9 +33,9 @@ struct CurrentHeartRateView: View {
                         petalColor: petalColors[i % petalColors.count],
                         isVisible: $petalVisibility[i] // Bind visibility to each petal
                     )
-                    .scaleEffect(scale) // Apply the scaling effect
                 }
             }
+            .scaleEffect(scale) // Apply the scaling effect to the entire petal ZStack
             .rotationEffect(rotationAngle) // Apply the rotation only to the petals
             // Circle with heart rate number
             Circle()
