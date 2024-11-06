@@ -10,7 +10,7 @@ class HeartRateMeasurementService: ObservableObject {
     @Published var currentHeartRate: Int = 0 // Published property for updates
     @Published var heartRateVariability: Double = 0.0 // New property for HRV
 
-    private var heartRateSamples: [Int] = [] // Store recent heart rate samples for HRV calculation
+    private var heartRateSamples: [Int] = [] // Store recent heart rate samples for 5-min HRV calculation
 
     // Initialize and request permissions
     init() {
@@ -92,7 +92,7 @@ class HeartRateMeasurementService: ObservableObject {
             DispatchQueue.main.async {
                 self.currentHeartRate = Int(heartRateValue)
                 self.heartRateSamples.append(self.currentHeartRate) // Add to samples
-                if self.heartRateSamples.count > 10 { // Limit to last 10 samples
+                if self.heartRateSamples.count > 300 { // Limit to last 300 samples (5 minutes at 1 sample/second)
                     self.heartRateSamples.removeFirst()
                 }
                 self.updateHRV() // Calculate HRV
@@ -100,7 +100,7 @@ class HeartRateMeasurementService: ObservableObject {
         }
     }
 
-    // Calculate HRV based on recent heart rate samples
+    // Calculate HRV based on 5-minute window of recent heart rate samples
     private func updateHRV() {
         guard heartRateSamples.count >= 2 else { return }
         
@@ -114,3 +114,4 @@ class HeartRateMeasurementService: ObservableObject {
         timer?.invalidate()
     }
 }
+
