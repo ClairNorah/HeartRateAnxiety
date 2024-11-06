@@ -37,7 +37,7 @@ struct CurrentHeartRateView: View {
                 }
             }
             .scaleEffect(scale) // Apply the scaling effect to the entire petal ZStack
-            .rotationEffect(rotationAngle) // Apply the rotation only to the petals
+            //.rotationEffect(rotationAngle) // Apply the rotation only to the petals
             // Circle with heart rate number
             Circle()
                 .fill(heartRateColor(for: value)) // Color of the circle based on heart rate
@@ -50,6 +50,7 @@ struct CurrentHeartRateView: View {
                         .foregroundColor(.white) // Text color inside the circle
                 )
         }
+        .rotationEffect(rotationAngle) // Apply the rotation effect to everything
         .onAppear {
             // Start the inactivity timer
             startInactivityTimer()
