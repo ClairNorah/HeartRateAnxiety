@@ -5,12 +5,13 @@ import Combine
 class HeartRateMeasurementService: ObservableObject {
     private var healthStore = HKHealthStore()
     private var heartRateQuery: HKAnchoredObjectQuery?
-    private var timer: Timer? // Timer for simulated heart rate in simulator
+    private var timer: Timer?
     
     @Published var currentHeartRate: Int = 0 // Published property for updates
     @Published var heartRateVariability: Double = 0.0 // New property for HRV
-
-    private var heartRateSamples: [Int] = [] // Store recent heart rate samples for 5-min HRV calculation
+    
+    private var heartRateSamples: [Int] = [] // Store recent heart rate samples for HRV calculation
+    private var startTime: Date? // Track the start time for each 5-minute interval
 
     // Initialize and request permissions
     init() {
@@ -23,6 +24,7 @@ class HeartRateMeasurementService: ObservableObject {
 
     private func startHeartRateSimulation(isRandom: Bool) {
         self.currentHeartRate = isRandom ? Int.random(in: 60...80) : 55
+        startTime = Date() // Set the start time
         var targetHeartRate = self.currentHeartRate
         var increasing = true
 
@@ -48,7 +50,12 @@ class HeartRateMeasurementService: ObservableObject {
                     }
                 }
             }
-            self.updateHRV() // Update HRV based on new heart rate
+            
+            // Accumulate samples and calculate HRV every 5 minutes
+            DispatchQueue.main.async {
+                self.heartRateSamples.append(self.currentHeartRate)
+                self.checkHRVTimeInterval() // Check if 5 minutes have passed
+            }
         }
     }
 
@@ -91,20 +98,27 @@ class HeartRateMeasurementService: ObservableObject {
             let heartRateValue = latestSample.quantity.doubleValue(for: heartRateUnit)
             DispatchQueue.main.async {
                 self.currentHeartRate = Int(heartRateValue)
-                self.heartRateSamples.append(self.currentHeartRate) // Add to samples
-                if self.heartRateSamples.count > 300 { // Limit to last 300 samples (5 minutes at 1 sample/second)
-                    self.heartRateSamples.removeFirst()
-                }
-                self.updateHRV() // Calculate HRV
+                self.heartRateSamples.append(self.currentHeartRate)
+                self.checkHRVTimeInterval() // Check if 5 minutes have passed
             }
         }
     }
 
-    // Calculate HRV based on 5-minute window of recent heart rate samples
+    // Check if 5 minutes have passed since `startTime` to calculate HRV
+    private func checkHRVTimeInterval() {
+        guard let startTime = startTime else { return }
+        
+        if Date().timeIntervalSince(startTime) >= 300 {
+            updateHRV() // Calculate HRV after 5 minutes
+            self.heartRateSamples.removeAll() // Clear samples for next interval
+            self.startTime = Date() // Reset start time
+        }
+    }
+
+    // Calculate HRV as the standard deviation of heart rate samples
     private func updateHRV() {
         guard heartRateSamples.count >= 2 else { return }
         
-        // Simple HRV calculation: standard deviation of heart rate samples
         let mean = Double(heartRateSamples.reduce(0, +)) / Double(heartRateSamples.count)
         let variance = heartRateSamples.map { pow(Double($0) - mean, 2.0) }.reduce(0, +) / Double(heartRateSamples.count)
         self.heartRateVariability = sqrt(variance) // HRV as standard deviation
