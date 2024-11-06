@@ -3,8 +3,8 @@ import Combine
 
 struct CurrentHeartRateView: View {
     var value: Int
-    @State private var petalVisibility: [Bool]  = []  // Array to track visibility of each petal
-    @State private var numberOfPetals: Int // Number of petals
+    @State private var numberOfPetals: Int = 6 // Number of petals
+    @State private var petalVisibility: [Bool] = [] // Adjust initial count
     let petalColors: [Color] = [.red, .yellow, .blue, .green, .orange, .purple] // Different petal colors
     @State private var rotationAngle: Angle = .zero // Track the rotation of the flower
     @State private var lastDragPosition: CGPoint? = nil // Track the last drag position
@@ -17,7 +17,6 @@ struct CurrentHeartRateView: View {
     
     init(value: Int) {
         self.value = value
-        self.numberOfPetals = 6
         // Initially, all petals are visible
         _petalVisibility = State(initialValue: Array(repeating: true, count: numberOfPetals))
     }
@@ -46,13 +45,16 @@ struct CurrentHeartRateView: View {
                 .overlay(
                     Text(String(emojiForValue(value)))
                         .fontWeight(.medium)
-                        .font(.system(size: 60))
+                        .font(.system(size: 30))
                         .foregroundColor(.white) // Text color inside the circle
                 )
         }
         .rotationEffect(rotationAngle) // Apply the rotation effect to everything
         .onAppear {
-            // Start the inactivity timer
+            if petalVisibility.count != numberOfPetals {
+                petalVisibility = Array(repeating: true, count: numberOfPetals)
+            }
+            ensurePetalVisibilityCount(for: numberOfPetals)
             startInactivityTimer()
         }
         .onDisappear {
@@ -60,6 +62,7 @@ struct CurrentHeartRateView: View {
         }
         .onChange(of: value) { newHeartRate in
             adjustNumberOfPetals(for: newHeartRate)
+            ensurePetalVisibilityCount(for: numberOfPetals)
             previousHeartRate = newHeartRate // Update previousHeartRate to the new value
         }
         .gesture(
@@ -83,6 +86,12 @@ struct CurrentHeartRateView: View {
         )
     }
 
+    private func ensurePetalVisibilityCount(for petals: Int) {
+        if petalVisibility.count < petals {
+            petalVisibility.append(contentsOf: Array(repeating: true, count: petals - petalVisibility.count))
+        }
+    }
+    
     // Function to start pulse animation
     private func startPulseAnimation() {
         guard !isInteracting else { return } // Only start animation if not interacting
@@ -158,8 +167,8 @@ struct CurrentHeartRateView: View {
         // Limit the range of the value to 50-100
         let limitedValue = min(max(value, 50), 100)
         
-        // Determine the segment based on the limited value
-        let segment = (limitedValue - 50) / 10
+        // Determine the segment based on the limited value, capping it at 4 for 100
+      let segment = min((limitedValue - 50) / 10, 4)
         
         // Define emojis for each segment from happy to sad
         let emojis = ["😊", "🙂", "😐", "😕", "😢"]
