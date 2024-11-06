@@ -28,27 +28,29 @@ struct CurrentHeartRateView: View {
             ZStack {
                 ForEach(0..<numberOfPetals, id: \.self) { i in
                     let angle = Double(i) * (2 * .pi) / Double(numberOfPetals) // Calculate angle for each petal
+                    let color = i < petalColors.count ? petalColors[i % petalColors.count] : petalColors.randomElement() ?? .orange // Choose color or random fallback
                     PetalView(
                         angle: angle,
-                        petalColor: petalColors[i % petalColors.count],
+                        petalColor: color,
                         isVisible: $petalVisibility[i] // Bind visibility to each petal
                     )
                 }
             }
             .scaleEffect(scale) // Apply the scaling effect to the entire petal ZStack
-            .rotationEffect(rotationAngle) // Apply the rotation only to the petals
+            //.rotationEffect(rotationAngle) // Apply the rotation only to the petals
             // Circle with heart rate number
             Circle()
                 .fill(heartRateColor(for: value)) // Color of the circle based on heart rate
                 .frame(width: 70, height: 80) // Size of the circle
                 .scaleEffect(scale) // Apply the scaling effect
                 .overlay(
-                    Text(String(value))
+                    Text(String(emojiForValue(value)))
                         .fontWeight(.medium)
-                        .font(.system(size: 30))
+                        .font(.system(size: 60))
                         .foregroundColor(.white) // Text color inside the circle
                 )
         }
+        .rotationEffect(rotationAngle) // Apply the rotation effect to everything
         .onAppear {
             // Start the inactivity timer
             startInactivityTimer()
@@ -151,4 +153,19 @@ struct CurrentHeartRateView: View {
         // Update previous heart rate
         previousHeartRate = currentHeartRate
     }
+    
+    func emojiForValue(_ value: Int) -> String {
+        // Limit the range of the value to 50-100
+        let limitedValue = min(max(value, 50), 100)
+        
+        // Determine the segment based on the limited value
+        let segment = (limitedValue - 50) / 10
+        
+        // Define emojis for each segment from happy to sad
+        let emojis = ["😊", "🙂", "😐", "😕", "😢"]
+        
+        // Return the corresponding emoji based on the segment
+        return emojis[segment]
+    }
+
 }
