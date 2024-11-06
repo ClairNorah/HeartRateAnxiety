@@ -22,7 +22,7 @@ class HeartRateMeasurementService: ObservableObject {
     }
 
     private func startHeartRateSimulation(isRandom: Bool) {
-        self.currentHeartRate = isRandom ? Int.random(in: 60...80) : 55
+        self.currentHeartRate = isRandom ? Int.random(in: 55...100) : 55
         var targetHeartRate = self.currentHeartRate
         var increasing = true
 

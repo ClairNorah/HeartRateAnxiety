@@ -28,9 +28,10 @@ struct CurrentHeartRateView: View {
             ZStack {
                 ForEach(0..<numberOfPetals, id: \.self) { i in
                     let angle = Double(i) * (2 * .pi) / Double(numberOfPetals) // Calculate angle for each petal
+                    let color = i < petalColors.count ? petalColors[i % petalColors.count] : petalColors.randomElement() ?? .orange // Choose color or random fallback
                     PetalView(
                         angle: angle,
-                        petalColor: petalColors[i % petalColors.count],
+                        petalColor: color,
                         isVisible: $petalVisibility[i] // Bind visibility to each petal
                     )
                 }
