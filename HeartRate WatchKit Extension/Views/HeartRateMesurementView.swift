@@ -8,14 +8,17 @@ struct HeartRateMeasurementView: View {
         VStack {
             Spacer()
 
+            // Show the current heart rate value
             CurrentHeartRateView(value: heartRateMeasurementService.currentHeartRate)
 
             Spacer()
 
-            // Display current heart rate and HRV
-            HeartRateHistoryView(
-                hrv: heartRateMeasurementService.heartRateVariability
-            )
+            // Show HRV value every 1 minute with adjusted font size
+            Text("HRV: \(heartRateMeasurementService.heartRateVariability, specifier: "%.2f") ms")
+                .font(.system(size: 12)) // Adjust the size as needed
+                .padding()
+
+            Spacer()
         }
         .padding()
         .onAppear {
@@ -25,7 +28,8 @@ struct HeartRateMeasurementView: View {
             InteractionLogger.saveInteractionsToCSV() // Save interactions to CSV when view disappears
         }
         .onReceive(heartRateMeasurementService.$currentHeartRate) { newHeartRate in
-            print("Current Heart Rate: \(newHeartRate)") // For debugging
+            // Debugging: print current heart rate whenever it changes
+            print("Current Heart Rate: \(newHeartRate)") // This will print in the console
         }
         .gesture(
             TapGesture()
@@ -34,11 +38,5 @@ struct HeartRateMeasurementView: View {
                     InteractionLogger.logInteraction() // Log any tap interaction
                 }
         )
-    }
-}
-
-struct HeartRateMeasurementView_Previews: PreviewProvider {
-    static var previews: some View {
-        HeartRateMeasurementView()
     }
 }

@@ -12,33 +12,29 @@ class HeartRateMeasurementService: ObservableObject {
     }
 
     private func startUpdatingHRV() {
-        // Sample HRV every 30 seconds and 1 minute
-        
-        // Timer for 30-second HRV updates
-        Timer.publish(every: 30, on: .main, in: .common)
-            .autoconnect()
-            .sink { [weak self] _ in
-                self?.updateHRV()
-                self?.logHRV(for: 30)
-            }
-            .store(in: &timers) // Store this timer in the set
-        
         // Timer for 1-minute HRV updates
         Timer.publish(every: 60, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
-                self?.logHRV(for: 60)
+                self?.updateHRV()
+                self?.logHRV(for: 60) // Log HRV for 1-minute interval
             }
             .store(in: &timers) // Store this timer in the set
     }
 
     private func updateHRV() {
-        // Placeholder: Replace with real HRV calculation
-        heartRateVariability = Double.random(in: 20.0...80.0)
+        // Calculate HRV based on current heart rate (example calculation)
+        heartRateVariability = calculateHRV(from: currentHeartRate)
+    }
+
+    private func calculateHRV(from heartRate: Int) -> Double {
+        // Example HRV calculation based on heart rate
+        // You can replace this with a real HRV calculation formula
+        let hrv = Double(100 - heartRate) // This is a placeholder; real formula needed
+        return max(0, min(hrv, 100)) // Ensure HRV stays within a reasonable range
     }
 
     private func logHRV(for interval: Int) {
         print("HRV at \(interval) seconds: \(heartRateVariability) ms")
     }
 }
-
