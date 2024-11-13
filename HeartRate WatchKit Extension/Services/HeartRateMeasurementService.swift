@@ -4,8 +4,9 @@ import SwiftUI
 class HeartRateMeasurementService: ObservableObject {
     @Published var currentHeartRate: Int = 0
     @Published var heartRateVariability: Double = 0.0
-    
-    private var timers: Set<AnyCancellable> = [] // Store both timers in a set
+
+    private var heartRateManager = HeartRateManager()
+    private var timers: Set<AnyCancellable> = []
 
     init() {
         startUpdatingHRV()
@@ -23,15 +24,12 @@ class HeartRateMeasurementService: ObservableObject {
     }
 
     private func updateHRV() {
-        // Calculate HRV based on current heart rate (example calculation)
-        heartRateVariability = calculateHRV(from: currentHeartRate)
-    }
-
-    private func calculateHRV(from heartRate: Int) -> Double {
-        // Example HRV calculation based on heart rate
-        // You can replace this with a real HRV calculation formula
-        let hrv = Double(100 - heartRate) // This is a placeholder; real formula needed
-        return max(0, min(hrv, 100)) // Ensure HRV stays within a reasonable range
+        // Fetch HRV using the HeartRateManager class
+        heartRateManager.fetchHeartRateSamples {
+            DispatchQueue.main.async {
+                self.heartRateVariability = self.heartRateManager.getHeartRateVariability()
+            }
+        }
     }
 
     private func logHRV(for interval: Int) {

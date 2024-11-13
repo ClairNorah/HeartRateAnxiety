@@ -168,7 +168,7 @@ struct CurrentHeartRateView: View {
         let limitedValue = min(max(value, 50), 100)
         
         // Determine the segment based on the limited value, capping it at 4 for 100
-      let segment = min((limitedValue - 50) / 10, 4)
+        let segment = min((limitedValue - 50) / 10, 4)
         
         // Define emojis for each segment from happy to sad
         let emojis = ["😊", "🙂", "😐", "😕", "😢"]
@@ -176,5 +176,4 @@ struct CurrentHeartRateView: View {
         // Return the corresponding emoji based on the segment
         return emojis[segment]
     }
-
 }
