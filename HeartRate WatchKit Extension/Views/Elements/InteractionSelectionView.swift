@@ -66,7 +66,7 @@ struct InteractionSelectionView: View {
         }
         // Another interaction full screen cover
         .fullScreenCover(isPresented: $showAnotherView) {
-            AnotherInteractionView()
+            AnotherInteractionView(value: 70)
         }
     }
 }

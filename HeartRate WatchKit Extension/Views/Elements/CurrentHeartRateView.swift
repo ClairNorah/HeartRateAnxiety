@@ -45,6 +45,7 @@ struct CurrentHeartRateView: View {
                 .scaleEffect(scale) // Apply the scaling effect
                 .overlay(
                     Text(String(emojiForValue(value)))
+                    //Text(String(emojiForValue(value)))
                         .fontWeight(.medium)
                         .font(.system(size: 60))
                         .foregroundColor(.white) // Text color inside the circle
