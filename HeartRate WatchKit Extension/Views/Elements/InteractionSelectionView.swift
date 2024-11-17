@@ -5,6 +5,7 @@ struct InteractionSelectionView: View {
     @State private var showFlowerView = false
     @State private var showCartoonView = false
     @State private var showAnotherView = false
+    @State private var showNoMovingView = false
 
     var body: some View {
         VStack {
@@ -16,7 +17,7 @@ struct InteractionSelectionView: View {
             Button(action: {
                 showFlowerView = true
             }) {
-                Text("Flower Interaction")
+                Text("Emoji Big")
                     .font(.headline)
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -30,7 +31,7 @@ struct InteractionSelectionView: View {
             Button(action: {
                 showCartoonView = true
             }) {
-                Text("Cartoon Characters")
+                Text("Default")
                     .font(.headline)
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -44,7 +45,21 @@ struct InteractionSelectionView: View {
             Button(action: {
                 showAnotherView = true
             }) {
-                Text("Another Interaction")
+                Text("Emoji small ")
+                    .font(.headline)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.purple)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .padding(.horizontal)
+            
+            // Button for Another Interaction
+            Button(action: {
+                showNoMovingView = true
+            }) {
+                Text("Emoji not moving ")
                     .font(.headline)
                     .padding()
                     .frame(maxWidth: .infinity)

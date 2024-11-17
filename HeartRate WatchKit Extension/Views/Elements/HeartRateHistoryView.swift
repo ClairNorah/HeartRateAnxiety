@@ -5,9 +5,9 @@ struct HeartRateHistoryView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("HRV: \(String(format: "%.2f", hrv)) ms") // Display HRV in milliseconds
+            /*Text("HRV: \(String(format: "%.2f", hrv)) ms") // Display HRV in milliseconds
                 .font(.system(size: 8))
-                .foregroundColor(.gray)
+                .foregroundColor(.gray)*/
         }
     }
 }

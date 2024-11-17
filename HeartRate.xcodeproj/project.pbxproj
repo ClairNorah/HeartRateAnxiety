@@ -22,6 +22,7 @@
 		1AC37F8E25C341DB001E9B2A /* CurrentHeartRateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC37F8D25C341DB001E9B2A /* CurrentHeartRateView.swift */; };
 		F739D2AC2CD25A45004E6A78 /* InteractionLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F739D2AB2CD25A3F004E6A78 /* InteractionLogger.swift */; };
 		F75E20E92CD178E5002A04DC /* HeartRateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75E20E82CD178E3002A04DC /* HeartRateManager.swift */; };
+		F76C6E652CE955B70036E9B9 /* noMovingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76C6E642CE955B20036E9B9 /* noMovingView.swift */; };
 		F77A679F2CB69FA000F2A74D /* PetalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77A679E2CB69F9600F2A74D /* PetalsView.swift */; };
 		F77A67A32CB6F1CC00F2A74D /* InteractionSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77A67A22CB6F1CB00F2A74D /* InteractionSelectionView.swift */; };
 		F77A67A52CB6F1FC00F2A74D /* CartoonCharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77A67A42CB6F1FA00F2A74D /* CartoonCharacterView.swift */; };
@@ -80,6 +81,7 @@
 		1AC37F8D25C341DB001E9B2A /* CurrentHeartRateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentHeartRateView.swift; sourceTree = "<group>"; };
 		F739D2AB2CD25A3F004E6A78 /* InteractionLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractionLogger.swift; sourceTree = "<group>"; };
 		F75E20E82CD178E3002A04DC /* HeartRateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateManager.swift; sourceTree = "<group>"; };
+		F76C6E642CE955B20036E9B9 /* noMovingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = noMovingView.swift; sourceTree = "<group>"; };
 		F77A679E2CB69F9600F2A74D /* PetalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetalsView.swift; sourceTree = "<group>"; };
 		F77A67A22CB6F1CB00F2A74D /* InteractionSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractionSelectionView.swift; sourceTree = "<group>"; };
 		F77A67A42CB6F1FA00F2A74D /* CartoonCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartoonCharacterView.swift; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 		1AC37F8425C33D5D001E9B2A /* Elements */ = {
 			isa = PBXGroup;
 			children = (
+				F76C6E642CE955B20036E9B9 /* noMovingView.swift */,
 				F739D2AB2CD25A3F004E6A78 /* InteractionLogger.swift */,
 				F75E20E82CD178E3002A04DC /* HeartRateManager.swift */,
 				F77A67A62CB6F25500F2A74D /* AnotherInteractionView.swift */,
@@ -311,6 +314,7 @@
 				F77A67A72CB6F25700F2A74D /* AnotherInteractionView.swift in Sources */,
 				F77A67A32CB6F1CC00F2A74D /* InteractionSelectionView.swift in Sources */,
 				F739D2AC2CD25A45004E6A78 /* InteractionLogger.swift in Sources */,
+				F76C6E652CE955B70036E9B9 /* noMovingView.swift in Sources */,
 				F77A679F2CB69FA000F2A74D /* PetalsView.swift in Sources */,
 				1A453E5C25C1F7160004FF93 /* NotificationView.swift in Sources */,
 				1A7BD4E525C1FF440036EACB /* HeartRateMeasurementService.swift in Sources */,

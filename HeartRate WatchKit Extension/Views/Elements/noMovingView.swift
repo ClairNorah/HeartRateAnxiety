@@ -1,7 +1,7 @@
 import SwiftUI
 import Combine
 
-struct AnotherInteractionView: View {
+struct NoMovingView: View {
     var value: Int
     @State private var petalVisibility: [Bool]  = []  // Array to track visibility of each petal
     @State private var numberOfPetals: Int // Number of petals
@@ -37,21 +37,20 @@ struct AnotherInteractionView: View {
                 }
             }
             .scaleEffect(scale) // Apply the scaling effect to the entire petal ZStack
-            //.rotationEffect(rotationAngle) // Apply the rotation only to the petals
-            // Circle with heart rate number
+            .rotationEffect(rotationAngle) // Apply the rotation only to the petals
+
+            // Circle with heart rate number (stays fixed in the center)
             Circle()
                 .fill(heartRateColor(for: value)) // Color of the circle based on heart rate
                 .frame(width: 70, height: 80) // Size of the circle
                 .scaleEffect(scale) // Apply the scaling effect
                 .overlay(
                     Text(String(emojiForValue(value)))
-                    //Text(String(emojiForValue(value)))
                         .fontWeight(.medium)
-                        .font(.system(size: 40))
+                        .font(.system(size: 60))
                         .foregroundColor(.white) // Text color inside the circle
                 )
         }
-        .rotationEffect(rotationAngle) // Apply the rotation effect to everything
         .onAppear {
             // Start the inactivity timer
             startInactivityTimer()
@@ -92,6 +91,7 @@ struct AnotherInteractionView: View {
             scale = 1.2 // Scale up
         }
     }
+
     // Function to start inactivity timer
     private func startInactivityTimer() {
         inactivityTimer = Timer
@@ -154,7 +154,7 @@ struct AnotherInteractionView: View {
         // Update previous heart rate
         previousHeartRate = currentHeartRate
     }
-    
+
     func emojiForValue(_ value: Int) -> String {
         // Limit the range of the value to 50-100
         let limitedValue = min(max(value, 50), 100)
@@ -170,3 +170,4 @@ struct AnotherInteractionView: View {
     }
 
 }
+

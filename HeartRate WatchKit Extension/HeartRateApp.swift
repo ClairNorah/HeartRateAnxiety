@@ -5,7 +5,7 @@ struct HeartRateApp: App {
     @SceneBuilder var body: some Scene {
         WindowGroup {
             NavigationView {
-                HeartRateMeasurementView() // Ensure the spelling is correct here
+                InteractionSelectionView() // Ensure the spelling is correct here
                 //InteractionSelectionView()
             }
         }
