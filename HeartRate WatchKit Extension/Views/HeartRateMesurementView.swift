@@ -8,13 +8,13 @@ struct HeartRateMeasurementView: View {
         VStack {
             Spacer()
 
-            CurrentHeartRateView(value: heartRateMeasurementService.currentHeartRate)
+            CurrentHeartRateView(hr: heartRateMeasurementService.currentHeartRate, hrv: heartRateMeasurementService.heartRateVariability)
 
             Spacer()
 
             // Display current HRV
             HeartRateHistoryView(
-                hrv: heartRateMeasurementService.heartRateVariability
+                hr: heartRateMeasurementService.currentHeartRate
             )
         }
         .padding()
