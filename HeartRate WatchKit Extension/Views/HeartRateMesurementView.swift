@@ -12,33 +12,28 @@ struct HeartRateMeasurementView: View {
 
             Spacer()
 
-            // Display current heart rate and HRV
+            // Display current HRV
             HeartRateHistoryView(
                 hrv: heartRateMeasurementService.heartRateVariability
             )
         }
         .padding()
         .onAppear {
-            InteractionLogger.logInteraction() // Log initial view appearance
+            InteractionLogger.logInteraction()
         }
         .onDisappear {
-            InteractionLogger.saveInteractionsToCSV() // Save interactions to CSV when view disappears
+            InteractionLogger.saveInteractionsToCSV()
         }
         .onReceive(heartRateMeasurementService.$currentHeartRate) { newHeartRate in
-            print("Current Heart Rate: \(newHeartRate)") // For debugging
+            print("Current Heart Rate: \(newHeartRate)")
         }
         .gesture(
             TapGesture()
                 .onEnded {
                     isInteracting = true
-                    InteractionLogger.logInteraction() // Log any tap interaction
+                    InteractionLogger.logInteraction()
                 }
         )
     }
 }
 
-struct HeartRateMeasurementView_Previews: PreviewProvider {
-    static var previews: some View {
-        HeartRateMeasurementView()
-    }
-}
