@@ -22,6 +22,37 @@ class HeartRateMeasurementService: ObservableObject {
 
         startHRVUpdateTimer()
     }
+    
+    private func startHeartRateSimulation(isRandom: Bool) {
+        self.currentHeartRate = isRandom ? Int.random(in: 55...100) : 55
+        var targetHeartRate = self.currentHeartRate
+        var increasing = true
+
+        simulationTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            if isRandom {
+                targetHeartRate += Int.random(in: -2...2)
+                targetHeartRate = min(max(targetHeartRate, 55), 100)
+                if self.currentHeartRate < targetHeartRate {
+                    self.currentHeartRate += 1
+                } else if self.currentHeartRate > targetHeartRate {
+                    self.currentHeartRate -= 1
+                }
+            } else {
+                if increasing {
+                    self.currentHeartRate += 1
+                    if self.currentHeartRate >= 100 {
+                        increasing = false
+                    }
+                } else {
+                    self.currentHeartRate -= 1
+                    if self.currentHeartRate <= 55 {
+                        increasing = true
+                    }
+                }
+            }
+            self.updateHRV() // Update HRV based on new heart rate
+        }
+    }
 
     private func requestAuthorization() {
         guard HKHealthStore.isHealthDataAvailable() else {
@@ -86,7 +117,7 @@ class HeartRateMeasurementService: ObservableObject {
         guard rrIntervals.count >= 2 else { return }
         
         self.heartRateVariability = calculateRMSSD(rrIntervals: rrIntervals)
-        print("HRV (Updated every 1 min): \(self.heartRateVariability) ms")
+        print("HRV: \(self.heartRateVariability) ms")
 
         rrIntervals.removeAll()
     }
