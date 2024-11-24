@@ -2,9 +2,10 @@ import SwiftUI
 import Combine
 
 struct CurrentHeartRateView: View {
-    var value: Int
-    @State private var petalVisibility: [Bool]  = []  // Array to track visibility of each petal
-    @State private var numberOfPetals: Int // Number of petals
+    var hr: Int
+    var hrv: Double
+    @State private var numberOfPetals: Int = 6 // Number of petals
+    @State private var petalVisibility: [Bool] = [] // Adjust initial count
     let petalColors: [Color] = [.red, .yellow, .blue, .green, .orange, .purple] // Different petal colors
     @State private var rotationAngle: Angle = .zero // Track the rotation of the flower
     @State private var lastDragPosition: CGPoint? = nil // Track the last drag position
@@ -13,11 +14,12 @@ struct CurrentHeartRateView: View {
     @State private var cancellables = Set<AnyCancellable>() // To hold references to cancellable objects
     @State private var inactivityTimer: AnyCancellable? // Timer for inactivity
     @State private var isInteracting = false // To track if the user is interacting
-    @State private var previousHeartRate: Int = 0
+    @State private var previousHrv: Double = 0
     
-    init(value: Int) {
-        self.value = value
-        self.numberOfPetals = 6
+    init(hr: Int, hrv: Double) {
+        self.hr = hr;
+        self.hrv = hrv
+        
         // Initially, all petals are visible
         _petalVisibility = State(initialValue: Array(repeating: true, count: numberOfPetals))
     }
@@ -40,27 +42,25 @@ struct CurrentHeartRateView: View {
             //.rotationEffect(rotationAngle) // Apply the rotation only to the petals
             // Circle with heart rate number
             Circle()
-                .fill(heartRateColor(for: value)) // Color of the circle based on heart rate
+                .fill(heartRateColor(for: hrv)) // Color of the circle based on heart rate variability
                 .frame(width: 70, height: 80) // Size of the circle
                 .scaleEffect(scale) // Apply the scaling effect
-                .overlay(
-                    Text(String(value))
-                        .fontWeight(.medium)
-                        .font(.system(size: 30))
-                        .foregroundColor(.white) // Text color inside the circle
-                )
         }
         .rotationEffect(rotationAngle) // Apply the rotation effect to everything
         .onAppear {
-            // Start the inactivity timer
+            if petalVisibility.count != numberOfPetals {
+                petalVisibility = Array(repeating: true, count: numberOfPetals)
+            }
+            ensurePetalVisibilityCount(for: numberOfPetals)
             startInactivityTimer()
         }
         .onDisappear {
             inactivityTimer?.cancel() // Cancel the timer when the view disappears
         }
-        .onChange(of: value) { newHeartRate in
-            adjustNumberOfPetals(for: newHeartRate)
-            previousHeartRate = newHeartRate // Update previousHeartRate to the new value
+        .onChange(of: hrv) { newHeartRateVariability in
+            adjustNumberOfPetals(for: newHeartRateVariability)
+            ensurePetalVisibilityCount(for: numberOfPetals)
+            previousHrv = newHeartRateVariability // Update previousHeartRate to the new value
         }
         .gesture(
             DragGesture()
@@ -83,6 +83,12 @@ struct CurrentHeartRateView: View {
         )
     }
 
+    private func ensurePetalVisibilityCount(for petals: Int) {
+        if petalVisibility.count < petals {
+            petalVisibility.append(contentsOf: Array(repeating: true, count: petals - petalVisibility.count))
+        }
+    }
+    
     // Function to start pulse animation
     private func startPulseAnimation() {
         guard !isInteracting else { return } // Only start animation if not interacting
@@ -122,22 +128,22 @@ struct CurrentHeartRateView: View {
     }
 
     // Function to determine the color based on heart rate
-    private func heartRateColor(for currentHeartRate: Int) -> Color {
-        switch currentHeartRate {
-        case ..<70:
-            return .green // Green for heart rate below 70
-        case 70..<80:
-            return .orange // Orange for heart rate between 70 and 80
-        case 80...:
-            return .red // Red for heart rate above 80
+    private func heartRateColor(for currentHRV: Double) -> Color {
+        switch currentHRV {
+        case 50...:
+            return .green // Green for heart rate variability above 50
+        case 41..<49:
+            return .orange // Orange for heart rate variability between 41 and 49
+        case ..<40:
+            return .red // Red for heart rate variability below 40
         default:
             return .green // Default to green if something goes wrong
         }
     }
 
-    private func adjustNumberOfPetals(for currentHeartRate: Int) {
-        let previousColor = heartRateColor(for: previousHeartRate)
-        let currentColor = heartRateColor(for: currentHeartRate)
+    private func adjustNumberOfPetals(for currentHrv: Double) {
+        let previousColor = heartRateColor(for: previousHrv)
+        let currentColor = heartRateColor(for: currentHrv)
 
         // Check if heart rate color is changing between zones
         if previousColor == .green && currentColor == .orange {
@@ -151,6 +157,6 @@ struct CurrentHeartRateView: View {
         }
 
         // Update previous heart rate
-        previousHeartRate = currentHeartRate
+        previousHrv = currentHrv
     }
 }

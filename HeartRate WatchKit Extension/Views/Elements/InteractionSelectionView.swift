@@ -58,7 +58,7 @@ struct InteractionSelectionView: View {
         }
         // Flower interaction full screen cover
         .fullScreenCover(isPresented: $showFlowerView) {
-            CurrentHeartRateView(value: 70)
+            CurrentHeartRateView(hr: 70, hrv: 30)
         }
         // Cartoon characters interaction full screen cover
         .fullScreenCover(isPresented: $showCartoonView) {
