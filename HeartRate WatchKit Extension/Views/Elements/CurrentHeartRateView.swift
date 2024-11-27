@@ -129,8 +129,12 @@ struct CurrentHeartRateView: View {
 
     // Function to determine the color based on heart rate
     private func heartRateColor(for currentHRV: Double) -> Color {
+        /*if currentHRV == 0 {
+            // Generate a dynamic rainbow color
+            return Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1)
+        }*/
         if currentHRV == 0 {
-            return .gray // Placeholder color for "calculating" phase
+            return .yellow // Placeholder color for "calculating" phase
         }
         switch currentHRV {
         case ..<40:
@@ -141,7 +145,7 @@ struct CurrentHeartRateView: View {
             return .green  //Green for heart rate variability above 50
 
         default:
-            return .green // Default to green if something goes wrong
+            return .yellow // Default to green if something goes wrong
         }
     }
 
