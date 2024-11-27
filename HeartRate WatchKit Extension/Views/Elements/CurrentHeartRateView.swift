@@ -15,7 +15,9 @@ struct CurrentHeartRateView: View {
     @State private var inactivityTimer: AnyCancellable? // Timer for inactivity
     @State private var isInteracting = false // To track if the user is interacting
     @State private var previousHrv: Double = 0
-    
+    @State private var timeElapsed: CGFloat = 0 // Track time elapsed for HRV calculation
+    private let totalInitializationTime: CGFloat = 300 // 5 minutes in seconds
+
     init(hr: Int, hrv: Double) {
         self.hr = hr;
         self.hrv = hrv
@@ -39,12 +41,23 @@ struct CurrentHeartRateView: View {
                 }
             }
             .scaleEffect(scale) // Apply the scaling effect to the entire petal ZStack
-            //.rotationEffect(rotationAngle) // Apply the rotation only to the petals
             // Circle with heart rate number
             Circle()
-                .fill(heartRateColor(for: hrv)) // Color of the circle based on heart rate variability
+                .trim(from: 0, to: timeElapsed) // Show a portion of the circle based on time elapsed
+                .stroke(style: StrokeStyle(lineWidth: 10, lineCap: .round)) // Customize the stroke width and appearance
+                .foregroundColor(timeElapsed == 1 ? heartRateColor(for: hrv) : .gray) // Color the circle as gray while calculating, then use HRV color
                 .frame(width: 70, height: 80) // Size of the circle
                 .scaleEffect(scale) // Apply the scaling effect
+                .overlay(
+                    Group {
+                        if hrv == 0 { // If HRV is 0 (during first 5 minutes)
+                            Text("HRV")
+                                .foregroundColor(.white)
+                                .font(.caption)
+                                .padding(5)
+                        }
+                    }
+                ) // Overlay text while HRV is being calculated
         }
         .rotationEffect(rotationAngle) // Apply the rotation effect to everything
         .onAppear {
@@ -53,6 +66,7 @@ struct CurrentHeartRateView: View {
             }
             ensurePetalVisibilityCount(for: numberOfPetals)
             startInactivityTimer()
+            startTimer() // Start the timer to fill the circle
         }
         .onDisappear {
             inactivityTimer?.cancel() // Cancel the timer when the view disappears
@@ -88,7 +102,7 @@ struct CurrentHeartRateView: View {
             petalVisibility.append(contentsOf: Array(repeating: true, count: petals - petalVisibility.count))
         }
     }
-    
+
     // Function to start pulse animation
     private func startPulseAnimation() {
         guard !isInteracting else { return } // Only start animation if not interacting
@@ -166,5 +180,15 @@ struct CurrentHeartRateView: View {
 
         // Update previous heart rate
         previousHrv = currentHrv
+    }
+
+    // Function to start the 5-minute timer and update timeElapsed
+    private func startTimer() {
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            timeElapsed += 1 / totalInitializationTime // Increment timeElapsed by the percentage of total time
+            if timeElapsed >= 1 {
+                timer.invalidate() // Stop the timer once the 5 minutes are up
+            }
+        }
     }
 }
