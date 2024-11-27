@@ -13,9 +13,9 @@ struct HeartRateMeasurementView: View {
             Spacer()
 
             // Display current HRV
-            HeartRateHistoryView(hr: heartRateMeasurementService.currentHeartRate)
-                .frame(maxWidth: .infinity, alignment: .leading
-                ) 
+            HeartRateHistoryView(
+                hr: heartRateMeasurementService.currentHeartRate
+            )
         }
         .padding()
         .onAppear {
