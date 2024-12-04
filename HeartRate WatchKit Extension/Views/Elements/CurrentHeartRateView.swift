@@ -150,7 +150,7 @@ struct CurrentHeartRateView: View {
             return .green  //Green for heart rate variability above 50
 
         default:
-            return .purple // Default to green if something goes wrong
+            return .gray // Default to green if something goes wrong
         }
     }
 
