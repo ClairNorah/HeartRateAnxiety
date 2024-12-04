@@ -9,7 +9,7 @@ struct InteractionSelectionView: View {
     var body: some View {
         VStack {
             Text("Select an Interaction")
-                .font(.largeTitle)
+                .font(.headline)
                 .padding()
 
             // Button for Flower Interaction
@@ -30,7 +30,7 @@ struct InteractionSelectionView: View {
             Button(action: {
                 showCartoonView = true
             }) {
-                Text("Cartoon Characters")
+                Text("Smiley 1")
                     .font(.headline)
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -44,7 +44,7 @@ struct InteractionSelectionView: View {
             Button(action: {
                 showAnotherView = true
             }) {
-                Text("Another Interaction")
+                Text("Smiley 2")
                     .font(.headline)
                     .padding()
                     .frame(maxWidth: .infinity)
