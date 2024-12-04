@@ -7,7 +7,8 @@ struct HeartRateHistoryView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("HR: \(hr)")
                 .font(.system(size: 8))
-                .foregroundColor(.gray)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 }
