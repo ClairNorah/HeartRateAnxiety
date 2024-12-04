@@ -117,7 +117,7 @@ class HeartRateMeasurementService: ObservableObject {
         guard rrIntervals.count >= 2 else { return }
         
         self.heartRateVariability = calculateRMSSD(rrIntervals: rrIntervals)
-        print("HRV: \(self.heartRateVariability) ms")
+        print("This is the HRV: \(self.heartRateVariability) ms")
 
         rrIntervals.removeAll()
     }

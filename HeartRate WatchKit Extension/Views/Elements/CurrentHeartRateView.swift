@@ -43,21 +43,19 @@ struct CurrentHeartRateView: View {
             .scaleEffect(scale) // Apply the scaling effect to the entire petal ZStack
             // Circle with heart rate number
             Circle()
-                .trim(from: 0, to: timeElapsed) // Show a portion of the circle based on time elapsed
-                .stroke(style: StrokeStyle(lineWidth: 10, lineCap: .round)) // Customize the stroke width and appearance
-                .foregroundColor(timeElapsed == 1 ? heartRateColor(for: hrv) : .gray) // Color the circle as gray while calculating, then use HRV color
+                .fill(timeElapsed < 1 ? Color.gray : heartRateColor(for: hrv))
                 .frame(width: 70, height: 80) // Size of the circle
                 .scaleEffect(scale) // Apply the scaling effect
                 .overlay(
                     Group {
-                        if hrv == 0 { // If HRV is 0 (during first 5 minutes)
-                            Text("HRV")
+                        if timeElapsed < 1 { // During the first 5 minutes
+                            /*Text("HRV")
                                 .foregroundColor(.white)
                                 .font(.caption)
-                                .padding(5)
+                                .padding(5) */
                         }
                     }
-                ) // Overlay text while HRV is being calculated
+                )
         }
         .rotationEffect(rotationAngle) // Apply the rotation effect to everything
         .onAppear {
@@ -144,8 +142,6 @@ struct CurrentHeartRateView: View {
     // Function to determine the color based on heart rate
     private func heartRateColor(for currentHRV: Double) -> Color {
         switch currentHRV {
-        case 0:
-            return .purple
         case ..<40:
             return .red // Red for heart rate variability below 40
         case 41..<49:
