@@ -87,25 +87,30 @@ class HeartRateMeasurementService: ObservableObject {
     }
 
     private func process(samples: [HKSample]?, error: Error?) {
-        guard error == nil else {
-            print("Error fetching heart rate samples: \(error!.localizedDescription)")
-            return
-        }
+    guard error == nil else {
+        print("Error fetching heart rate samples: \(error!.localizedDescription)")
+        return
+    }
 
-        if let samples = samples as? [HKQuantitySample], !samples.isEmpty {
-            let latestSample = samples.last!
-            let heartRateUnit = HKUnit(from: "count/min")
-            let heartRateValue = latestSample.quantity.doubleValue(for: heartRateUnit)
+    if let samples = samples as? [HKQuantitySample], !samples.isEmpty {
+        let latestSample = samples.last!
+        let heartRateUnit = HKUnit(from: "count/min")
+        let heartRateValue = latestSample.quantity.doubleValue(for: heartRateUnit)
+        let timestamp = latestSample.startDate // Capture the timestamp
 
-            DispatchQueue.main.async {
-                self.currentHeartRate = Int(heartRateValue)
+        DispatchQueue.main.async {
+            self.currentHeartRate = Int(heartRateValue)
 
-                // Simulate RR intervals based on heart rate
-                let rrInterval = 300.0 / heartRateValue
-                self.rrIntervals.append(rrInterval)
-            }
+            // Calculate RR interval
+            let rrInterval = 300.0 / heartRateValue
+            self.rrIntervals.append(rrInterval)
+            
+            // Store timestamp and RR interval
+            self.saveRRInterval(timestamp: timestamp, rrInterval: rrInterval)
         }
     }
+}
+
 
     private func startHRVUpdateTimer() {
         hrvTimer = Timer.scheduledTimer(withTimeInterval: 300.0, repeats: true) { [weak self] _ in
