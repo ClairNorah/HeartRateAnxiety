@@ -1,141 +1,56 @@
 import Foundation
 import Combine
-import HealthKit
 
 class HeartRateMeasurementService: ObservableObject {
-    private var healthStore = HKHealthStore()
-    private var heartRateQuery: HKAnchoredObjectQuery?
-    private var simulationTimer: Timer? // Timer for simulated heart rate in simulator
-    private var hrvTimer: Timer? // Timer for HRV updates
-
     @Published var currentHeartRate: Int = 0
     @Published var heartRateVariability: Double = 0.0
+    @Published var rrIntervals: [Double] = [] // Store RR intervals
 
-    private var rrIntervals: [Double] = []
+    private var cancellables = Set<AnyCancellable>()
 
     init() {
-        #if targetEnvironment(simulator)
-        startHeartRateSimulation(isRandom: true)
-        #else
-        requestAuthorization()
-        #endif
-
-        startHRVUpdateTimer()
-    }
-    
-    private func startHeartRateSimulation(isRandom: Bool) {
-        self.currentHeartRate = isRandom ? Int.random(in: 55...100) : 55
-        var targetHeartRate = self.currentHeartRate
-        var increasing = true
-
-        simulationTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            if isRandom {
-                targetHeartRate += Int.random(in: -2...2)
-                targetHeartRate = min(max(targetHeartRate, 55), 100)
-                if self.currentHeartRate < targetHeartRate {
-                    self.currentHeartRate += 1
-                } else if self.currentHeartRate > targetHeartRate {
-                    self.currentHeartRate -= 1
-                }
-            } else {
-                if increasing {
-                    self.currentHeartRate += 1
-                    if self.currentHeartRate >= 100 {
-                        increasing = false
-                    }
-                } else {
-                    self.currentHeartRate -= 1
-                    if self.currentHeartRate <= 55 {
-                        increasing = true
-                    }
-                }
+        // Simulate heart rate updates every few seconds (Replace with real data)
+        Timer.publish(every: 5, on: .main, in: .common)
+            .autoconnect()
+            .sink { _ in
+                self.updateHeartRate()
             }
-            self.updateHRV() // Update HRV based on new heart rate
-        }
+            .store(in: &cancellables)
     }
 
-    private func requestAuthorization() {
-        guard HKHealthStore.isHealthDataAvailable() else {
-            print("HealthKit is not available on this device.")
-            return
-        }
-
-        let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate)!
-        let typesToRead: Set<HKObjectType> = [heartRateType]
-
-        healthStore.requestAuthorization(toShare: nil, read: typesToRead) { success, error in
-            if success {
-                print("HealthKit authorization granted.")
-                self.startHeartRateQuery()
-            } else {
-                print("HealthKit authorization failed: \(error?.localizedDescription ?? "Unknown error")")
-            }
-        }
-    }
-
-    private func startHeartRateQuery() {
-        let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate)!
-        let query = HKAnchoredObjectQuery(type: heartRateType, predicate: nil, anchor: nil, limit: HKObjectQueryNoLimit) { [weak self] (query, samples, _, _, error) in
-            self?.process(samples: samples, error: error)
-        }
-
-        query.updateHandler = { [weak self] (query, samples, _, _, error) in
-            self?.process(samples: samples, error: error)
-        }
-
-        healthStore.execute(query)
-    }
-
-    private func process(samples: [HKSample]?, error: Error?) {
-    guard error == nil else {
-        print("Error fetching heart rate samples: \(error!.localizedDescription)")
-        return
-    }
-
-    if let samples = samples as? [HKQuantitySample], !samples.isEmpty {
-        let latestSample = samples.last!
-        let heartRateUnit = HKUnit(from: "count/min")
-        let heartRateValue = latestSample.quantity.doubleValue(for: heartRateUnit)
-        let timestamp = latestSample.startDate // Capture the timestamp
+    private func updateHeartRate() {
+        let newHR = Int.random(in: 60...100) // Simulated HR
+        let newRRIntervals = generateRandomRRIntervals(for: newHR) // Simulate RR intervals
+        let timestamp = Date().formattedDateString() // Get formatted timestamp
 
         DispatchQueue.main.async {
-            self.currentHeartRate = Int(heartRateValue)
-
-            // Calculate RR interval
-            let rrInterval = 300.0 / heartRateValue
-            self.rrIntervals.append(rrInterval)
+            self.currentHeartRate = newHR
+            self.rrIntervals = newRRIntervals
+            self.heartRateVariability = self.calculateHRV(from: newRRIntervals)
             
-            // Store timestamp and RR interval
-            self.saveRRInterval(timestamp: timestamp, rrInterval: rrInterval)
+            // **Log values in the console**
+            print("Timestamp: \(timestamp), HR: \(self.currentHeartRate), RR Intervals: \(self.rrIntervals)")
         }
+    }
+
+    private func generateRandomRRIntervals(for hr: Int) -> [Double] {
+        let rrInterval = 60_000.0 / Double(hr) // RR in milliseconds
+        return (1...5).map { _ in rrInterval + Double.random(in: -10...10) } // Add small variations
+    }
+
+    private func calculateHRV(from rrIntervals: [Double]) -> Double {
+        guard rrIntervals.count > 1 else { return 0.0 }
+        let meanRR = rrIntervals.reduce(0, +) / Double(rrIntervals.count)
+        let squaredDiffs = rrIntervals.map { pow($0 - meanRR, 2) }
+        return sqrt(squaredDiffs.reduce(0, +) / Double(rrIntervals.count))
     }
 }
 
-
-    private func startHRVUpdateTimer() {
-        hrvTimer = Timer.scheduledTimer(withTimeInterval: 300.0, repeats: true) { [weak self] _ in
-            self?.updateHRV()
-        }
-    }
-
-    private func updateHRV() {
-        guard rrIntervals.count >= 2 else { return }
-        
-        self.heartRateVariability = calculateRMSSD(rrIntervals: rrIntervals)
-        print("This is the HRV: \(self.heartRateVariability) ms")
-
-        rrIntervals.removeAll()
-    }
-
-    private func calculateRMSSD(rrIntervals: [Double]) -> Double {
-        let squaredDifferences = zip(rrIntervals, rrIntervals.dropFirst())
-            .map { pow($1 - $0, 2) }
-        let meanOfSquaredDifferences = squaredDifferences.reduce(0, +) / Double(squaredDifferences.count)
-        return sqrt(meanOfSquaredDifferences) * 1000 // Convert to milliseconds
-    }
-
-    deinit {
-        simulationTimer?.invalidate()
-        hrvTimer?.invalidate()
+// **Helper Extension for Formatting Date**
+extension Date {
+    func formattedDateString() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        return formatter.string(from: self)
     }
 }

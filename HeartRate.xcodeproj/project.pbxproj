@@ -26,6 +26,7 @@
 		F77A67A32CB6F1CC00F2A74D /* InteractionSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77A67A22CB6F1CB00F2A74D /* InteractionSelectionView.swift */; };
 		F77A67A52CB6F1FC00F2A74D /* CartoonCharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77A67A42CB6F1FA00F2A74D /* CartoonCharacterView.swift */; };
 		F77A67A72CB6F25700F2A74D /* AnotherInteractionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77A67A62CB6F25500F2A74D /* AnotherInteractionView.swift */; };
+		F7D560EA2D6687FE005B97C3 /* HeartRateLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D560E92D6687FB005B97C3 /* HeartRateLogger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +85,7 @@
 		F77A67A22CB6F1CB00F2A74D /* InteractionSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractionSelectionView.swift; sourceTree = "<group>"; };
 		F77A67A42CB6F1FA00F2A74D /* CartoonCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartoonCharacterView.swift; sourceTree = "<group>"; };
 		F77A67A62CB6F25500F2A74D /* AnotherInteractionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnotherInteractionView.swift; sourceTree = "<group>"; };
+		F7D560E92D6687FB005B97C3 /* HeartRateLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateLogger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +189,7 @@
 		1AC37F8425C33D5D001E9B2A /* Elements */ = {
 			isa = PBXGroup;
 			children = (
+				F7D560E92D6687FB005B97C3 /* HeartRateLogger.swift */,
 				F739D2AB2CD25A3F004E6A78 /* InteractionLogger.swift */,
 				F75E20E82CD178E3002A04DC /* HeartRateManager.swift */,
 				F77A67A62CB6F25500F2A74D /* AnotherInteractionView.swift */,
@@ -308,6 +311,7 @@
 				1AC37F8E25C341DB001E9B2A /* CurrentHeartRateView.swift in Sources */,
 				1A453E5E25C1F7160004FF93 /* ComplicationController.swift in Sources */,
 				1A453E5625C1F7160004FF93 /* HeartRateApp.swift in Sources */,
+				F7D560EA2D6687FE005B97C3 /* HeartRateLogger.swift in Sources */,
 				F77A67A72CB6F25700F2A74D /* AnotherInteractionView.swift in Sources */,
 				F77A67A32CB6F1CC00F2A74D /* InteractionSelectionView.swift in Sources */,
 				F739D2AC2CD25A45004E6A78 /* InteractionLogger.swift in Sources */,
