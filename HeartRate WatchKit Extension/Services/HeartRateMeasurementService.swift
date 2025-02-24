@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import SwiftUI
 
 class HeartRateMeasurementService: ObservableObject {
     @Published var currentHeartRate: Int = 0
@@ -27,9 +28,12 @@ class HeartRateMeasurementService: ObservableObject {
             self.currentHeartRate = newHR
             self.rrIntervals = newRRIntervals
             self.heartRateVariability = self.calculateHRV(from: newRRIntervals)
-            
-            // **Log values in the console**
+
+            // Log values in the console
             print("Timestamp: \(timestamp), HR: \(self.currentHeartRate), RR Intervals: \(self.rrIntervals)")
+
+            // Save values to CSV in the Documents folder
+            self.saveToCSV(timestamp: timestamp, heartRate: self.currentHeartRate, rrIntervals: self.rrIntervals)
         }
     }
 
@@ -44,9 +48,38 @@ class HeartRateMeasurementService: ObservableObject {
         let squaredDiffs = rrIntervals.map { pow($0 - meanRR, 2) }
         return sqrt(squaredDiffs.reduce(0, +) / Double(rrIntervals.count))
     }
+
+    private func saveToCSV(timestamp: String, heartRate: Int, rrIntervals: [Double]) {
+        // Get the Documents directory URL
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fileURL = documentsDirectory.appendingPathComponent("HeartRateData.csv")
+
+        // Create the CSV row
+        let rrIntervalsString = rrIntervals.map { String($0) }.joined(separator: ", ")
+        let csvRow = "\(timestamp), \(heartRate), \(rrIntervalsString)\n"
+
+        // Write to the file
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            // Append to existing file
+            if let fileHandle = try? FileHandle(forWritingTo: fileURL) {
+                fileHandle.seekToEndOfFile()
+                if let data = csvRow.data(using: .utf8) {
+                    fileHandle.write(data)
+                }
+                fileHandle.closeFile()
+            }
+        } else {
+            // Create a new file and write the header
+            let header = "Timestamp, Heart Rate, RR Intervals\n"
+            try? header.write(to: fileURL, atomically: true, encoding: .utf8)
+            if let data = csvRow.data(using: .utf8) {
+                try? data.write(to: fileURL, options: .atomic)
+            }
+        }
+    }
 }
 
-// **Helper Extension for Formatting Date**
+// Helper Extension for Formatting Date
 extension Date {
     func formattedDateString() -> String {
         let formatter = DateFormatter()
