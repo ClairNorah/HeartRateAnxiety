@@ -44,7 +44,7 @@ class HeartRateMeasurementService: ObservableObject {
     }
 
     private func saveToCSV(timestamp: String, heartRate: Int, rrIntervals: [Double]) {
-        let fileName = "HeartRateData.csv"
+        let fileName = "myworldtonight.csv"
         let directoryPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let filePath = directoryPath.appendingPathComponent(fileName)
         let rrIntervalsString = rrIntervals.map { String(format: "%.2f", $0) }.joined(separator: ", ")
