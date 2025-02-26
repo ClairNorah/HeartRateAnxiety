@@ -13,6 +13,7 @@ struct HeartRateMeasurementView: View {
             Spacer()
 
             HeartRateHistoryView(hr: heartRateMeasurementService.currentHeartRate)
+            
         }
         .padding()
         .onAppear {
@@ -33,5 +34,3 @@ struct HeartRateMeasurementView: View {
         )
     }
 }
-
-// Assuming you have defined InteractionLogger elsewhere in your code.

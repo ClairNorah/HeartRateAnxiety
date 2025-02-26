@@ -44,21 +44,32 @@ class HeartRateMeasurementService: ObservableObject {
     }
 
     private func saveToCSV(timestamp: String, heartRate: Int, rrIntervals: [Double]) {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let fileURL = documentsDirectory.appendingPathComponent("HeartRateData.csv")
-        let rrIntervalsString = rrIntervals.map { String($0) }.joined(separator: ", ")
-        let csvRow = "\(timestamp), \(heartRate), \(rrIntervalsString)\n"
+        let fileName = "HeartRateData.csv"
+        let directoryPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let filePath = directoryPath.appendingPathComponent(fileName)
+        let rrIntervalsString = rrIntervals.map { String(format: "%.2f", $0) }.joined(separator: ", ")
 
-        if FileManager.default.fileExists(atPath: fileURL.path) {
-            if let fileHandle = try? FileHandle(forWritingTo: fileURL) {
-                fileHandle.seekToEndOfFile()
-                if let data = csvRow.data(using: .utf8) { fileHandle.write(data) }
-                fileHandle.closeFile()
+        // Splitting timestamp into date and time
+        let dateTimeComponents = timestamp.split(separator: " ")
+        let datePart = dateTimeComponents.first ?? ""
+        let timePart = dateTimeComponents.last ?? ""
+
+        let csvRow = "\(datePart), \(timePart), \(heartRate), \(rrIntervalsString)\n"
+
+        if !FileManager.default.fileExists(atPath: filePath.path) {
+            // Explicitly defining proper CSV headers
+            let header = "Date, Time, Heart Rate (bpm), RR Interval 1 (ms), RR Interval 2 (ms), RR Interval 3 (ms), RR Interval 4 (ms), RR Interval 5 (ms)\n"
+            try? header.write(to: filePath, atomically: true, encoding: .utf8)
+        }
+
+        if let fileHandle = try? FileHandle(forWritingTo: filePath) {
+            fileHandle.seekToEndOfFile()
+            if let data = csvRow.data(using: .utf8) {
+                fileHandle.write(data)
             }
+            fileHandle.closeFile()
         } else {
-            let header = "Timestamp, Heart Rate, RR Intervals\n"
-            try? header.write(to: fileURL, atomically: true, encoding: .utf8)
-            if let data = csvRow.data(using: .utf8) { try? data.write(to: fileURL, options: .atomic) }
+            try? csvRow.write(to: filePath, atomically: true, encoding: .utf8)
         }
     }
 }
