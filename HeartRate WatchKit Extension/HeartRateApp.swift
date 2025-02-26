@@ -6,10 +6,10 @@ struct HeartRateApp: App {
         WindowGroup {
             NavigationView {
                 HeartRateMeasurementView() // Ensure the spelling is correct here
-                //InteractionSelectionView()
             }
         }
         
         WKNotificationScene(controller: NotificationController.self, category: "myCategory")
     }
 }
+

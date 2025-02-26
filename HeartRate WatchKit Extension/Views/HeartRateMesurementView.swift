@@ -12,17 +12,14 @@ struct HeartRateMeasurementView: View {
 
             Spacer()
 
-            // Display current HRV
-            HeartRateHistoryView(
-                hr: heartRateMeasurementService.currentHeartRate
-            )
+            HeartRateHistoryView(hr: heartRateMeasurementService.currentHeartRate)
         }
         .padding()
         .onAppear {
-            InteractionLogger.logInteraction()
+            InteractionLogger.logInteraction() // Log interaction when the view appears
         }
         .onDisappear {
-            InteractionLogger.saveInteractionsToCSV()
+            InteractionLogger.saveInteractionsToCSV() // Save interactions when the view disappears
         }
         .onReceive(heartRateMeasurementService.$currentHeartRate) { newHeartRate in
             print("Current Heart Rate: \(newHeartRate)")
@@ -31,9 +28,10 @@ struct HeartRateMeasurementView: View {
             TapGesture()
                 .onEnded {
                     isInteracting = true
-                    InteractionLogger.logInteraction()
+                    InteractionLogger.logInteraction() // Log interaction on tap
                 }
         )
     }
 }
 
+// Assuming you have defined InteractionLogger elsewhere in your code.

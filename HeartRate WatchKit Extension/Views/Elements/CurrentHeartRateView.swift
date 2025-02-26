@@ -176,7 +176,7 @@ struct CurrentHeartRateView: View {
     // Function to start the 5-minute timer and update timeElapsed
     private func startTimer() {
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-            timeElapsed += 1 / totalInitializationTime // Increment timeElapsed by the percentage of total time
+            timeElapsed += 1 / totalInitializationTime // Increment timeElapsed by the percenta ge of total time
             if timeElapsed >= 1 {
                 timer.invalidate() // Stop the timer once the 5 minutes are up
             }
